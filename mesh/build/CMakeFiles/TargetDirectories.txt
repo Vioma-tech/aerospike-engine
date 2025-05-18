@@ -1,3 +1,0 @@
-/home/gleb_butorin/macroproject/aerospike-engine/mesh/build/CMakeFiles/laval.dir
-/home/gleb_butorin/macroproject/aerospike-engine/mesh/build/CMakeFiles/edit_cache.dir
-/home/gleb_butorin/macroproject/aerospike-engine/mesh/build/CMakeFiles/rebuild_cache.dir
