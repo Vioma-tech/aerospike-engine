@@ -8,7 +8,7 @@ int main(int argc, char **argv) {
     gmsh::option::setNumber("Mesh.SecondOrderLinear", 1);  // Improve linear accuracy
 
     // Параметры
-    const double angle_deg = 5.0;  // Угол наклона сопла
+    const double angle_deg = 2.0;  // Угол наклона сопла
     const double angle_rad = angle_deg * M_PI / 180.0;
     const double L_throat = 1.0;    // Длина горловины
     const double L_exit = 3.0;     // Длина расширяющейся части
@@ -88,7 +88,7 @@ int main(int argc, char **argv) {
     gmsh::model::setPhysicalName(2, 2, "outlet");
     gmsh::model::setPhysicalName(2, 3, "walls");
     gmsh::model::setPhysicalName(2, 4, "wedge");
-    gmsh::model::setPhysicalName(3, 1, "fluid");
+    // gmsh::model::setPhysicalName(3, 1, "fluid");
 
 
 

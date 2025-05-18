@@ -21,36 +21,32 @@ FoamFile
     inlet
     {
         type            patch;
-        physicalType    patch;
         nFaces          48;
-        startFace       168;
+        startFace       159;
     }
     outlet
     {
         type            patch;
-        physicalType    patch;
         nFaces          4;
-        startFace       216;
+        startFace       207;
     }
     walls
     {
-        type            patch;
-        physicalType    patch;
+        type            wall;
         nFaces          18;
-        startFace       220;
+        startFace       211;
     }
     wedge
     {
-        type            patch;
-        physicalType    patch;
+        type            wedge;
         nFaces          3;
-        startFace       238;
+        startFace       229;
     }
     defaultFaces
     {
         type            patch;
-        nFaces          51;
-        startFace       241;
+        nFaces          49;
+        startFace       232;
     }
 )
 

@@ -16,14 +16,14 @@ FoamFile
 
 dimensions      [0 1 -1 0 0 0 0];
 
-internalField   uniform (5 0 0);
+internalField   uniform (0 0 0);
 
 boundaryField
 {
     inlet
     {
         type            fixedValue;
-        value           uniform (5 0 0);
+        value           uniform (100 0 0);
     }
 
     outlet
@@ -31,19 +31,14 @@ boundaryField
         type            zeroGradient;
     }
 
-    bottom
+    walls
     {
-        type            symmetryPlane;
+        type            zeroGradient;
     }
 
-    top
+    wedge
     {
-        type            symmetryPlane;
-    }
-
-    obstacle
-    {
-        type            slip;
+        type            wedge;
     }
 
     defaultFaces

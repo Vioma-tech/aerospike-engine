@@ -25,7 +25,7 @@ FoamFile
 {
     type            cellZone;
     cellLabels      List<label> 
-115
+110
 (
 0
 1
@@ -137,11 +137,6 @@ FoamFile
 107
 108
 109
-110
-111
-112
-113
-114
 )
 ;
 }
