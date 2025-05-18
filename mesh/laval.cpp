@@ -55,23 +55,49 @@ int main(int argc, char **argv) {
         extruded
     );
 
-    // После создания геометрии, но ДО генерации сетки:
-    int inlet = gmsh::model::addPhysicalGroup(1, {lineTags.front()}, 1);  // Вход (первая линия)
-    int outlet = gmsh::model::addPhysicalGroup(1, {lineTags[3]}, 2);     // Выход (4-я линия)
-    int walls = gmsh::model::addPhysicalGroup(1, {lineTags[1], lineTags[2], lineTags[4], lineTags[5]}, 3); // Стенки
-    int wedge = gmsh::model::addPhysicalGroup(1, {lineTags.back()}, 4);  // Симметрия (последняя линия)
 
-    // Для 3D-сетки используйте addPhysicalGroup(2, {...}) для поверхностей
-    gmsh::model::setPhysicalName(1, 1, "inlet");
-    gmsh::model::setPhysicalName(1, 2, "outlet");
-    gmsh::model::setPhysicalName(1, 3, "walls");
-    gmsh::model::setPhysicalName(1, 4, "wedge");
+    gmsh::model::geo::synchronize();
+    gmsh::model::mesh::generate(3);  // Explicitly generate 3D mesh
+
+    // Assign physical groups using extruded entities
+    int inlet_surf = extruded[1].second;  // Original face (inlet)
+    int outlet_surf = extruded[2].second; // Rotated face (outlet)
+    int side_wall1 = extruded[3].second;  // Side wall 1
+    int side_wall2 = extruded[4].second;  // Side wall 2
+    int wedge_face = extruded[5].second;  // Wedge (symmetry)
+
+    gmsh::model::addPhysicalGroup(2, {inlet_surf}, 1);
+    gmsh::model::addPhysicalGroup(2, {outlet_surf}, 2);
+    gmsh::model::addPhysicalGroup(2, {side_wall1, side_wall2}, 3); // Walls
+    gmsh::model::addPhysicalGroup(2, {wedge_face}, 4); // Wedge
+
+    // Volume
+    // Verify 3D elements exist
+    std::vector<std::pair<int, int>> volumes;
+    gmsh::model::getEntities(volumes, 3);
+    if (volumes.empty()) {
+        gmsh::logger::write("No 3D elements generated!", "error");
+        return 1;
+    }
+
+
+    gmsh::model::addPhysicalGroup(3, {volumes[0].second}, 1);
+
+    // Set names
+    gmsh::model::setPhysicalName(2, 1, "inlet");
+    gmsh::model::setPhysicalName(2, 2, "outlet");
+    gmsh::model::setPhysicalName(2, 3, "walls");
+    gmsh::model::setPhysicalName(2, 4, "wedge");
+    gmsh::model::setPhysicalName(3, 1, "fluid");
+
+
 
     // Синхронизируем и генерируем 3D-сетку
     gmsh::model::geo::synchronize();
     gmsh::option::setNumber("Mesh.MeshSizeMin", 0.1);
     gmsh::option::setNumber("Mesh.MeshSizeMax", 0.3);
     gmsh::model::mesh::generate(3);
+    
 
     gmsh::option::setNumber("Mesh.MshFileVersion", 2.2);  // Use legacy format
     // Сохраняем сетку

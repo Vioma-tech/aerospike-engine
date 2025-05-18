@@ -16,14 +16,41 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-1
+5
 (
-    patch0
+    inlet
     {
         type            patch;
         physicalType    patch;
-        nFaces          290;
-        startFace       479;
+        nFaces          48;
+        startFace       168;
+    }
+    outlet
+    {
+        type            patch;
+        physicalType    patch;
+        nFaces          4;
+        startFace       216;
+    }
+    walls
+    {
+        type            patch;
+        physicalType    patch;
+        nFaces          18;
+        startFace       220;
+    }
+    wedge
+    {
+        type            patch;
+        physicalType    patch;
+        nFaces          3;
+        startFace       238;
+    }
+    defaultFaces
+    {
+        type            patch;
+        nFaces          51;
+        startFace       241;
     }
 )
 
