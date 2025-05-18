@@ -1,14 +1,16 @@
 #include <gmsh.h>
 #include <cmath>
+#include <algorithm>
 
 int main(int argc, char **argv) {
     gmsh::initialize(argc, argv);
     gmsh::model::add("laval");
-    gmsh::option::setNumber("Mesh.ElementOrder", 1);  // Force linear elements
-    gmsh::option::setNumber("Mesh.SecondOrderLinear", 1);  // Improve linear accuracy
+    // gmsh::option::setNumber("Mesh.Normals", 1);  // Включить нормали
+    // gmsh::option::setNumber("Mesh.ElementOrder", 1);  // Force linear elements
+    // gmsh::option::setNumber("Mesh.SecondOrderLinear", 1);  // Improve linear accuracy
 
     // Параметры
-    const double angle_deg = 2.0;  // Угол наклона сопла
+    const double angle_deg = 1.0;  // Угол наклона сопла
     const double angle_rad = angle_deg * M_PI / 180.0;
     const double L_throat = 1.0;    // Длина горловины
     const double L_exit = 3.0;     // Длина расширяющейся части
@@ -41,6 +43,7 @@ int main(int argc, char **argv) {
         lineTags.push_back(gmsh::model::geo::addLine(pointTags[i], pointTags[next]));
     }
 
+    std::reverse(lineTags.begin(), lineTags.end()); // нормаль в другую сторону
     // Замыкаем контур и создаём поверхность
     int curveLoop = gmsh::model::geo::addCurveLoop(lineTags);
     int surface = gmsh::model::geo::addPlaneSurface({curveLoop});
@@ -60,16 +63,18 @@ int main(int argc, char **argv) {
     gmsh::model::mesh::generate(3);  // Explicitly generate 3D mesh
 
     // Assign physical groups using extruded entities
-    int inlet_surf = extruded[1].second;  // Original face (inlet)
-    int outlet_surf = extruded[2].second; // Rotated face (outlet)
-    int side_wall1 = extruded[3].second;  // Side wall 1
-    int side_wall2 = extruded[4].second;  // Side wall 2
-    int wedge_face = extruded[5].second;  // Wedge (symmetry)
+    int inlet_surf = extruded[6].second;  // (inlet)
+    int outlet_surf_1 = extruded[4].second;
+    int outlet_surf_2 = extruded[5].second; // Rotated face (outlet)
+    int wall1 = extruded[2].second;  // Side wall 1
+    int wall2 = extruded[3].second;  // Side wall 2
+    int wedge_face_1 = extruded[0].second;
+    int wedge_face_2 = extruded[1].second;
 
     gmsh::model::addPhysicalGroup(2, {inlet_surf}, 1);
-    gmsh::model::addPhysicalGroup(2, {outlet_surf}, 2);
-    gmsh::model::addPhysicalGroup(2, {side_wall1, side_wall2}, 3); // Walls
-    gmsh::model::addPhysicalGroup(2, {wedge_face}, 4); // Wedge
+    gmsh::model::addPhysicalGroup(2, {outlet_surf_1, outlet_surf_2}, 2);
+    gmsh::model::addPhysicalGroup(2, {wall1, wall2}, 3); // Walls
+    gmsh::model::addPhysicalGroup(2, {wedge_face_1, wedge_face_2}, 4); // Wedge
 
     // Volume
     // Verify 3D elements exist
@@ -89,8 +94,6 @@ int main(int argc, char **argv) {
     gmsh::model::setPhysicalName(2, 3, "walls");
     gmsh::model::setPhysicalName(2, 4, "wedge");
     // gmsh::model::setPhysicalName(3, 1, "fluid");
-
-
 
     // Синхронизируем и генерируем 3D-сетку
     gmsh::model::geo::synchronize();
