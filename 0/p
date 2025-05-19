@@ -9,26 +9,27 @@ FoamFile
 {
     version     2.0;
     format      ascii;
-    class       volVectorField;
-    object      U;
+    class       volScalarField;
+    object      p;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [0 1 -1 0 0 0 0];
+dimensions      [1 -1 -2 0 0 0 0];
 
-internalField   uniform (0 0 0);
+internalField   uniform 1e5;
 
 boundaryField
 {
     inlet
     {
         type            fixedValue;
-        value           uniform (100 0 0);
+        value           uniform 5e5;
     }
 
     outlet
     {
-        type            zeroGradient;
+        type            fixedValue;
+        value           uniform 1e5;
     }
 
     walls
@@ -36,7 +37,12 @@ boundaryField
         type            zeroGradient;
     }
 
-    wedge
+    wedge1
+    {
+        type            wedge;
+    }
+
+    wedge2
     {
         type            wedge;
     }
