@@ -27,7 +27,8 @@ type_mapping = {
     'inlet': 'patch',  # Замените на нужный тип
     'outlet': 'patch',
     'walls': 'wall',
-    'wedge': 'wedge',
+    'wedge1': 'wedge',
+    'wedge2': 'wedge',
     # defaultFaces не меняем, если не нужно
 }
 

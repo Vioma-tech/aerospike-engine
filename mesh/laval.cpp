@@ -7,7 +7,8 @@ int main(int argc, char **argv) {
     gmsh::model::add("laval");
 
     // Parameters
-    const double angle_deg = 1.0;  // Half-angle of the wedge (e.g., 1° → total 2° sector)
+    double ls = 1e-1;
+    const double angle_deg = 1.0;  // angle of the wedge
     const double angle_rad = angle_deg * M_PI / 180.0;
     const double L_throat = 1.0;
     const double L_exit = 3.0;
@@ -30,7 +31,7 @@ int main(int argc, char **argv) {
     // Add points to GMSH
     std::vector<int> pointTags;
     for (const auto &p : points) {
-        pointTags.push_back(gmsh::model::geo::addPoint(p.first, p.second, 0.0));
+        pointTags.push_back(gmsh::model::geo::addPoint(p.first, p.second, 0.0, ls));
     }
 
     // Connect points with lines
@@ -40,29 +41,30 @@ int main(int argc, char **argv) {
         lineTags.push_back(gmsh::model::geo::addLine(pointTags[i], pointTags[next]));
     }
 
-    std::reverse(lineTags.begin(), lineTags.end()); // Reverse normal direction
     int curveLoop = gmsh::model::geo::addCurveLoop(lineTags);
     int surface = gmsh::model::geo::addPlaneSurface({curveLoop});
 
-    // Rotate the profile in BOTH directions (±angle_deg)
-    std::vector<std::pair<int, int>> extruded_pos, extruded_neg;
+    // Угол поворота (в радианах)
+    double theta = -angle_rad / 2; // 30 градусов
 
-    // Positive rotation (+1°)
+    // Вращаем поверхность вокруг оси X, проходящей через начало координат (0, 0, 0)
+    gmsh::model::geo::rotate(
+        {{2, surface}},  // Объект для вращения
+        0.0, 0.0, 0.0,           // Центр вращения (ось проходит через эту точку)
+        1.0, 0.0, 0.0,           // Направление оси вращения (ось X)
+        theta                   // Угол вращения
+    );
+
+    // Rotate the profile
+    std::vector<std::pair<int, int>> extruded;
+
+    // Rotation (+1°)
     gmsh::model::geo::revolve(
         {{2, surface}},
         0.0, 0.0, 0.0,   // Axis origin
         1.0, 0.0, 0.0,    // Axis direction (X-axis)
         angle_rad,        // Positive angle
-        extruded_pos
-    );
-
-    // Negative rotation (-1°)
-    gmsh::model::geo::revolve(
-        {{2, surface}},
-        0.0, 0.0, 0.0,   // Axis origin
-        1.0, 0.0, 0.0,    // Axis direction (X-axis)
-        -angle_rad,       // Negative angle
-        extruded_neg
+        extruded
     );
 
     gmsh::model::geo::synchronize();
@@ -72,21 +74,21 @@ int main(int argc, char **argv) {
     // For OpenFOAM, you can keep them separate but assign the same physical group.
 
     // Assign physical groups
-    int inlet_surf_pos = extruded_pos[6].second;  // Inlet (+1° side)
-    int inlet_surf_neg = extruded_neg[6].second;  // Inlet (-1° side)
-    int wedge1 = extruded_pos[0].second;          // Wedge1 (+1° face)
-    int wedge2 = extruded_neg[0].second;          // Wedge2 (-1° face)
-    int wall1_pos = extruded_pos[2].second;       // Wall (+1° side)
-    int wall2_pos = extruded_pos[3].second;
-    int wall1_neg = extruded_neg[2].second;       // Wall (-1° side)
-    int wall2_neg = extruded_neg[3].second;
-    int outlet_pos = extruded_pos[4].second;      // Outlet (+1° side)
-    int outlet_neg = extruded_neg[4].second;     // Outlet (-1° side)
+    int wedge1 = extruded[0].second;          // Wedge1
+    int wedge2 = extruded[1].second;          // Wedge2
+
+    int inlet = extruded[6].second;  // Inlet
+
+    int wall1 = extruded[2].second;       
+    int wall2 = extruded[3].second; // Wall
+
+    int outlet1 = extruded[4].second;      
+    int outlet2 = extruded[5].second;     // Outlet 
 
     // Group surfaces
-    gmsh::model::addPhysicalGroup(2, {inlet_surf_pos, inlet_surf_neg}, 1, "inlet");
-    gmsh::model::addPhysicalGroup(2, {outlet_pos, outlet_neg}, 2, "outlet");
-    gmsh::model::addPhysicalGroup(2, {wall1_pos, wall2_pos, wall1_neg, wall2_neg}, 3, "walls");
+    gmsh::model::addPhysicalGroup(2, {inlet}, 1, "inlet");
+    gmsh::model::addPhysicalGroup(2, {outlet1, outlet2}, 2, "outlet");
+    gmsh::model::addPhysicalGroup(2, {wall1, wall2}, 3, "walls");
     gmsh::model::addPhysicalGroup(2, {wedge1}, 4, "wedge1");
     gmsh::model::addPhysicalGroup(2, {wedge2}, 5, "wedge2");
 
@@ -101,8 +103,8 @@ int main(int argc, char **argv) {
 
     // Generate mesh
     gmsh::model::geo::synchronize();
-    gmsh::option::setNumber("Mesh.MeshSizeMin", 0.01);
-    gmsh::option::setNumber("Mesh.MeshSizeMax", 0.03);
+    // gmsh::option::setNumber("Mesh.MeshSizeMin", 0.01);
+    // gmsh::option::setNumber("Mesh.MeshSizeMax", 0.03);
     gmsh::model::mesh::generate(3);
 
     // Save mesh (legacy format for OpenFOAM)

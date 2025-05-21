@@ -16,45 +16,37 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-6
+5
 (
+    wedge2
+    {
+        type            wedge;
+        nFaces          918;
+        startFace       4278;
+    }
     walls
     {
         type            wall;
-        nFaces          202;
-        startFace       106491;
+        nFaces          66;
+        startFace       5196;
     }
     outlet
     {
         type            patch;
-        
-        nFaces          412;
-        startFace       106693;
+        nFaces          59;
+        startFace       5262;
     }
     inlet
     {
         type            patch;
-        
-        nFaces          178;
-        startFace       107105;
+        nFaces          9;
+        startFace       5321;
     }
     wedge1
     {
         type            wedge;
-        nFaces          9775;
-        startFace       107283;
-    }
-    wedge2
-    {
-        type            wedge;
-        nFaces          9775;
-        startFace       117058;
-    }
-    defaultFaces
-    {
-        type            empty;
-        nFaces          536;
-        startFace       126833;
+        nFaces          920;
+        startFace       5330;
     }
 )
 
