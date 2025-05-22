@@ -26,9 +26,9 @@ def process_boundary_file(file_path, type_mapping):
 type_mapping = {
     'inlet': 'patch',  # Замените на нужный тип
     'outlet': 'patch',
-    'walls': 'wall',
+    'wall': 'wall',
+    'wedge0': 'wedge',
     'wedge1': 'wedge',
-    'wedge2': 'wedge',
     # defaultFaces не меняем, если не нужно
 }
 

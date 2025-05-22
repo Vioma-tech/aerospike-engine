@@ -8,7 +8,7 @@
 FoamFile
 {
     version     2.0;
-    format      ascii;
+    format      binary;
     arch        "LSB;label=32;scalar=64";
     class       polyBoundaryMesh;
     location    "constant/polyMesh";
@@ -16,37 +16,49 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-5
+7
 (
-    wedge2
+    wedge1
     {
         type            wedge;
-        nFaces          918;
-        startFace       4278;
+        nFaces          5703;
+        startFace       11170;
     }
-    walls
+    wall
     {
         type            wall;
-        nFaces          66;
-        startFace       5196;
-    }
-    outlet
-    {
-        type            patch;
-        nFaces          59;
-        startFace       5262;
+        nFaces          113;
+        startFace       16873;
     }
     inlet
     {
         type            patch;
-        nFaces          9;
-        startFace       5321;
+        nFaces          13;
+        startFace       16986;
     }
-    wedge1
+    wedge0
     {
         type            wedge;
-        nFaces          920;
-        startFace       5330;
+        nFaces          5703;
+        startFace       16999;
+    }
+    atm1
+    {
+        type            patch;
+        nFaces          25;
+        startFace       22702;
+    }
+    atm2
+    {
+        type            patch;
+        nFaces          46;
+        startFace       22727;
+    }
+    atm3
+    {
+        type            patch;
+        nFaces          8;
+        startFace       22773;
     }
 )
 

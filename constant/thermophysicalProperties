@@ -1,7 +1,7 @@
 /*--------------------------------*- C++ -*----------------------------------*\
 | =========                 |                                                 |
 | \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  v2412                                 |
+|  \\    /   O peration     | Version:  v2206                                 |
 |   \\  /    A nd           | Website:  www.openfoam.com                      |
 |    \\/     M anipulation  |                                                 |
 \*---------------------------------------------------------------------------*/
@@ -19,7 +19,7 @@ thermoType
     type            hePsiThermo;
     mixture         pureMixture;
     transport       const;
-    thermo          hConst;
+    thermo          eConst;
     equationOfState perfectGas;
     specie          specie;
     energy          sensibleInternalEnergy;
@@ -27,20 +27,19 @@ thermoType
 
 mixture
 {
-    // normalised gas
     specie
     {
-        molWeight       11640.3;
+        molWeight   28.9;
     }
     thermodynamics
     {
-        Cp              2.5;
-        Hf              0;
+        Cv          1005;
+        Hf          0;
     }
     transport
     {
-        mu              0;
-        Pr              1;
+        mu          0.0;
+        Pr          0.7;
     }
 }
 
