@@ -103,8 +103,8 @@ int main(int argc, char **argv) {
 
     // Generate mesh
     gmsh::model::geo::synchronize();
-    gmsh::option::setNumber("Mesh.MeshSizeMin", 0.005);
-    gmsh::option::setNumber("Mesh.MeshSizeMax", 0.015);
+    gmsh::option::setNumber("Mesh.MeshSizeMin", 0.01);
+    gmsh::option::setNumber("Mesh.MeshSizeMax", 0.03);
     gmsh::model::mesh::generate(3);
 
     // Save mesh (legacy format for OpenFOAM)
