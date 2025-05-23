@@ -52,6 +52,10 @@ boundaryField
     {
         type            wedge;
     }
+    defaultFaces
+    {
+        type            zeroGradient;
+    }
 }
 
 // ************************************************************************* //
